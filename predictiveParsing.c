@@ -1,140 +1,148 @@
-//program to demonstrate Shift reduce parsing
+//program to construct Predictive parsing
 
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
 
-int i,j,c,z;
-char a[20],ac[20],stk[20],act[20];
+char prod[3][15]={"A->aBa","B->bB","B->@"};
+char table[2][5][3]={{"aBa","",""},{"@","bB",""}};
 
-void check();
+int size[2][3]={3,0,0,1,2,0};
+int n;
+char s[20],stack[20];
+
+void display(int i ,int j)
+{
+        int k;
+        for(k=0;k<=i;k++)
+                printf("%c",stack[k]);
+        printf(" ");
+        for(k=j;k<n;k++)
+                printf("%c",s[k]);
+        printf("\n");
+}
 
 void main()
 {
-        puts("grammar is \n E->E+T|T\n T->T*F|F\n F->(E)|id \n");
-        printf("Enter the string :\t");
-        scanf("%s",a);
-        c=strlen(a);
-        strcpy(act,"shift->");
-        puts("stack\t\t input\t\t action\t");
-            
-        for(i=0,j=0;j<c;i++,j++)
+        int i,j,k,row,col;
+        printf("\nGrammar is \n");
+        for(i=0;i<3;i++)
+                printf("%s\n",prod[i]);
+        printf("\nPrdictive parsing table is\n");
+        printf("\ta \tb \t$ \n");
+        printf("--------------------------------------\n");
+        for(i=0;i<2;i++)
         {
-                if(a[j]=='i' && a[j+1]=='d')
+                if(i==0)
+                        printf("A");
+                else
+                        printf("B");
+                for(j=0;j<3;j++)
                 {
-                        stk[i]=a[j];
-                        stk[i+1]=a[j+1];
-                        stk[i+2]='\0';
-                        a[j]=' ';
-                        a[j+1]=' ';
-                        printf("$%s\t %s$\t %sid\n",stk,a,act);
-                        check();
-                 }
-                 else{
-                        stk[i]=a[j];
-                        stk[i+1]='\0';
-                        a[j]=' ';
-                        printf("$%s\t %s$\t %ssymbol\n",stk,a,act);
-                        check();
-                      }
-          }
-}
-
-void check()
-{
-        strcpy(ac,"Reduce");
-        for(z=0;z<c;z++)
+                        printf("\t%s",table[i][j]);
+                }
+                printf("\n");
+        }
+        printf("\nEnter the String : \t");
+        scanf("%s",s);
+        strcat(s,"$");
+        n=strlen(s);
+        stack[0]='$';
+        stack[1]='A';
+        i=1;
+        j=0;
+        
+        printf("\nStack input ");
+        printf("\n----------------------------------------\n");
+        while(1)
         {
-                if (stk[z]=='(' && stk[z+1]=='E' && stk[z+2]==')')
+                if(stack[i]==s[j])
                 {
-                        stk[z]='F';
-                        stk[z+1]='\0';
-                        stk[z+2]='\0';
-                        printf("$%s\t %s$\t %s\n",stk,a,ac);
-                        i=i-2;
-                 }
-          }
-
-        for(z=0;z<c;z++)
-        {
-                if (stk[z]=='i'  && stk[z+1]=='d')
-                {
-                        stk[z]='F';
-                        stk[z+1]='\0';
-                        printf("$%s\t %s$\t %s\n",stk,a,ac);
-                        j=j+1;
-                 }
-         }
-
-        for(z=0;z<c;z++)
-        {
-                if (stk[z]=='T' && stk[z+1]=='*' && stk[z+2]=='F')
-                {
-                        stk[z]='T';
-                        stk[z+1]='\0';
-                        stk[z+2]='\0';
-                        printf("$%s\t %s$\t %s\n",stk,a,ac);
-                        i=i-2;
-                 }
-                 else if(stk[z]=='F')
-                 {
-                        stk[z]='T';
-                        stk[z+1]='\0';
-                         printf("$%s\t %s$\t %s\n",stk,a,ac);
-                      
-                  }
-          }
-          
-         for(z=0;z<c;z++)
-        {
-                if (stk[z]=='E' && stk[z+1]=='+' && stk[z+2]=='T' && stk[z+3]=='*')
-                        break;
-                if (stk[z]=='E' && stk[z+1]=='+' && stk[z+2]=='T')             
-                 {
-                        if(a[j+1]=='*')
-                                break;
-                        else{
-                                  stk[z]='E';
-                                  stk[z+1]='\0';
-                                  stk[z+2]='\0';
-                                  printf("$%s\t %s$\t %s\n",stk,a,ac);
-                                  i=i-2;
-                             }
-                 }else if(stk[z]=='T')
+                        i--;
+                        j++;
+                        if(stack[i]=='$' && s[j]=='$')
                         {
-                                stk[z]='E';
-                                stk[z+1]='\0';
-                                printf("$%s\t %s$\t %s\n",stk,a,ac);
-                           
+                                printf("$$\nSuccess\n");
+                                break;
                         }
-         }
-}
+                        else if(stack[i]=='$' && s[j]!='$')
+                        {
+                                printf("Error\n");
+                                break;
+                        }
+                        display(i,j);
+                 }
+                        
+                  switch(stack[i])
+                  {
+                          case 'A':row=0;
+                                   break;
+                          case 'B':row=1;
+                                   break;
+                  }
+                        
+                  switch(s[j])
+                   {
+                          case 'a':col=0;
+                                   break;
+                          case 'b':col=1;
+                                   break;
+                          case '$':col=2;
+                                  break;
+                   }
+                         
+                   if(table[row][col][0]=='\0')
+                   {
+                           printf("\nError\n");
+                            break;
+                   }
+                    else if(table[row][col][0]=='@')
+                    {
+                            i--;
+                            display(i,j);
+                    }
+                    else
+                    {
+                           for(k=size[row][col]-1;k>=0;k--)
+                           {
+                                    stack[i]=table[row][col][k];
+                                     i++;
+                           }
+                           i--;
+                           display(i,j);
+                    }
+           }
+                 
+  }  
 
 
 /*
 
-goutham@ubuntu:~/Desktop/COLLEGE$ cc Lab05.c
+goutham@ubuntu:~/Desktop/COLLEGE$ cc Lab04.c
 goutham@ubuntu:~/Desktop/COLLEGE$ ./a.out
-grammar is 
- E->E+T|T
- T->T*F|F
- F->(E)|id 
 
-Enter the string :	id+id*id
-stack		 input		 action	
-$id	   +id*id$	 shift->id
-$F	   +id*id$	 Reduce
-$T	   +id*id$	 Reduce
-$E	   +id*id$	 Reduce
-$E+	    id*id$	 shift->symbol
-$E+id	      *id$	 shift->id
-$E+F	      *id$	 Reduce
-$E+T	      *id$	 Reduce
-$E+T*	       id$	 shift->symbol
-$E+T*id	         $	 shift->id
-$E+T*F	         $	 Reduce
-$E+T	         $	 Reduce
-$E	         $	 Reduce
-goutham@ubuntu:~/Desktop/COLLEGE$ 
+Grammar is 
+A->aBa
+B->bB
+B->@
 
-*/
+Prdictive parsing table is
+	a 	b 	$ 
+--------------------------------------
+A	aBa		
+B	@	bB	
+
+Enter the String : 	abba
+
+Stack input 
+----------------------------------------
+$aBa abba$
+$aB bba$
+$aBb bba$
+$aB ba$
+$aBb ba$
+$aB a$
+$a a$
+$$
+Success
+goutham@ubuntu:~/Desktop/COLLEGE$  */
