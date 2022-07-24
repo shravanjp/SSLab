@@ -2,6 +2,9 @@
 int frame[10],page[20],recent[10],f,n,i,j,k,choice;
 int pageHit=0;
 
+/*NOTE : recent array conatins the order in which pages are inserted to the frame and updated(if page miss)*/
+
+
 void FIFO(){
     int isPageHit, curPtr=0;
     for(i=0;i<n;i++){
@@ -26,14 +29,15 @@ void FIFO(){
     printf("Number of page fault : %d \n",n-pageHit);
 }
 
+//finding the "index" of the least recent page
 int findLeastRecentlyUsedPage(int recent[],int frameSize){
-    int leastPageVal = recent[0];
-    int leastPage = 0;
-    int l;
-    for(l = 1;l<frameSize;l++){
-        if(recent[l] < leastPageVal){
-            leastPageVal = recent[l];
-            leastPage = l;
+    int leastPage = 0;  //index
+    int leastPageVal = recent[0];  //index value
+    int x;
+    for(x = 1;x<frameSize;x++){
+        if(recent[x] < leastPageVal){
+            leastPageVal = recent[x];
+            leastPage = x;
         }
     }
     return leastPage;
@@ -55,11 +59,12 @@ void LRU(){
                 isPageHit = 1;
                 pageHit++;
                 counter++;
-                recent[j] = counter;
+                recent[j] = counter;        //should update recent array even if it is page hit
                 break;
             }
         }
 
+        //page miss
         if(isPageHit == 0){
             for(j=0;j<f;j++){
                 if(frame[j] == -1){
@@ -71,11 +76,13 @@ void LRU(){
                 }
             }
         }
+
+        //page miss and not first frames
         if(isPageHit==0 && isFirstFramePages == 0){
             int pos = findLeastRecentlyUsedPage(recent,f);
             counter++;
-            recent[pos]  = counter;
             frame[pos] = page[i];
+            recent[pos]  = counter;
         }
 
         for(k=0;k<f;k++)
