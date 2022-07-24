@@ -22,7 +22,6 @@ void FIFO(){
             printf("%d  ",frame[k]);
         }
     }
-    pageHit = 0;
     printf("\nNumber of Page Hit : %d\n",pageHit);
     printf("Number of page fault : %d \n",n-pageHit);
 }
