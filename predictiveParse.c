@@ -14,7 +14,9 @@ char s[20],stack[20];
 void display(int i ,int j)
 {
         int k;
+        // printf("%c",stack[0]);
         for(k=0;k<=i;k++)
+        // for(k=i;k>0;k--)
                 printf("%c",stack[k]);
         printf(" ");
         for(k=j;k<n;k++)
@@ -44,11 +46,17 @@ void main()
                 printf("\n");
         }
         printf("\nEnter the String : \t");
-        scanf("%s",s);
+        scanf("%s",&s);
         strcat(s,"$");
         n=strlen(s);
         stack[0]='$';
         stack[1]='A';
+
+        /*      NOTE:
+                i->Top of the stack
+                j->Current starting position of input string
+        */
+
         i=1;
         j=0;
         
@@ -103,6 +111,13 @@ void main()
                     }
                     else
                     {
+                            /*
+                                while inserting to the top of the stack - 
+                                we insert 'RHS' selected from the table
+                                `from the end`  to the top of the stack 
+
+                                i.e B->bB, then we insert B first then b 
+                            */
                            for(k=size[row][col]-1;k>=0;k--)
                            {
                                     stack[i]=table[row][col][k];
@@ -117,10 +132,6 @@ void main()
 
 
 /*
-
-goutham@ubuntu:~/Desktop/COLLEGE$ cc Lab04.c
-goutham@ubuntu:~/Desktop/COLLEGE$ ./a.out
-
 Grammar is 
 A->aBa
 B->bB
@@ -145,4 +156,4 @@ $aB a$
 $a a$
 $$
 Success
-goutham@ubuntu:~/Desktop/COLLEGE$  */
+*/
