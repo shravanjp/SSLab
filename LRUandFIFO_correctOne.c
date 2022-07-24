@@ -2,8 +2,13 @@
 int frame[10],page[20],recent[10],f,n,i,j,k,choice;
 int pageHit=0;
 
-/*NOTE : recent array conatins the order in which pages are inserted to the frame and updated(if page miss)*/
-
+/*NOTE : "recent[] array" conatins the order
+ in which pages are inserted to the frame. 
+ i.e recent[] is updated -"if page miss, while replacing" 
+                         -"if page hit"
+    with the help of the `counter` variable
+*/
+    
 
 void FIFO(){
     int isPageHit, curPtr=0;
