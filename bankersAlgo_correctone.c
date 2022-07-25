@@ -32,7 +32,7 @@ void calculate_TotalResourceAllocated(){
     }
 }
 
-int check(int x){
+int areResourcesSufficient(int x){
     int flag=0,k;
     for(k=0;k<nr;k++){
         if(available[k] >= rem_need[x][k]){
@@ -52,7 +52,7 @@ void Bankers(){
     while(c<np){
         flag = 0;
         for(i=0;i<np;i++){
-            int isSufficient = check(i);
+            int isSufficient = areResourcesSufficient(i);
             if(isAllocated[i] == 0 && isSufficient == 1){
                 printf("Allocated Resource to : P%d\n",i);
                 isAllocated[i] = 1;
@@ -75,19 +75,50 @@ void Bankers(){
 }
 
 void main(){
+    printf("Enter the number of Processes:\n");
     scanf("%d",&np);
+    printf("Enter the number of Resources:\n");
     scanf("%d",&nr);
 
-    printf("Enter Allocation Matrix\n");
-    readMatrix(alloc);
-    printf("Enter the Max need matrix\n");
-    readMatrix(maxneed);
     printf("Enter the Total Resource Given:\n");
     for(i=0;i<nr;i++){
         scanf("%d",&resourceGiven[i]);
     }
 
+    printf("Enter Allocation Matrix\n");
+    readMatrix(alloc);
+    printf("Enter the Max need matrix\n");
+    readMatrix(maxneed);
+    
+
     calculate_RemainingNeed();
     calculate_TotalResourceAllocated();
     Bankers();
 }
+
+/*
+Enter the number of Processes:
+5
+Enter the number of Resources:
+3
+Enter the Total Resource Given:
+10 5 7
+Enter Allocation Matrix
+0 1 0
+2 0 0
+3 0 2
+2 1 1
+0 0 2
+Enter the Max need matrix
+7 5 3
+3 2 2
+9 0 2
+4 2 2
+5 3 3
+Allocated Resource to : P1
+Allocated Resource to : P3
+Allocated Resource to : P4
+Allocated Resource to : P0
+Allocated Resource to : P2
+Safely Allocated
+*/
